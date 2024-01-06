@@ -1,4 +1,3 @@
-import { createWebHistory, createRouter } from "vue-router";
 /* Layout */
 import Layout from "@/layout";
 
@@ -24,19 +23,8 @@ import Layout from "@/layout";
   }
  */
 
-// 公共路由
+// 项目公共路由
 export const constantRoutes = [
-  {
-    path: "/redirect",
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: "/redirect/:path(.*)",
-        component: () => import("@/pages/firstDemo/views/redirect/index.vue"),
-      },
-    ],
-  },
   {
     path: "/login",
     component: () => import("@/pages/firstDemo/views/login"),
@@ -47,16 +35,7 @@ export const constantRoutes = [
     component: () => import("@/pages/firstDemo/views/register"),
     hidden: true,
   },
-  {
-    path: "/:pathMatch(.*)*",
-    component: () => import("@/pages/firstDemo/views/error/404"),
-    hidden: true,
-  },
-  {
-    path: "/401",
-    component: () => import("@/pages/firstDemo/views/error/401"),
-    hidden: true,
-  },
+
   {
     path: "",
     component: Layout,
@@ -132,17 +111,3 @@ export const dynamicRoutes = [
     ],
   },
 ];
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes: constantRoutes,
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    } else {
-      return { top: 0 };
-    }
-  },
-});
-
-export default router;

@@ -6,7 +6,7 @@ import ParentView from "@/components/ParentView";
 import InnerLink from "@/layout/components/InnerLink";
 
 // 匹配views里面，所有层级下，所有的.vue文件
-const modules = import.meta.glob("./../../**/views/**/*.vue");
+const modules = import.meta.glob("./../../pages/**/views/**/*.vue");
 
 console.log(
   import.meta.env.VITE_PAGES_PROJECT,
@@ -57,54 +57,54 @@ const usePermissionStore = defineStore("permission", {
                 link: null,
               },
               children: [
-                {
-                  name: "User",
-                  path: "user",
-                  hidden: false,
-                  component: "system/user/index",
-                  meta: {
-                    title: "用户管理",
-                    icon: "user",
-                    noCache: false,
-                    link: null,
-                  },
-                },
-                {
-                  name: "Role",
-                  path: "role",
-                  hidden: false,
-                  component: "system/role/index",
-                  meta: {
-                    title: "角色管理",
-                    icon: "peoples",
-                    noCache: false,
-                    link: null,
-                  },
-                },
-                {
-                  name: "Menu",
-                  path: "menu",
-                  hidden: false,
-                  component: "system/menu/index",
-                  meta: {
-                    title: "菜单管理",
-                    icon: "tree-table",
-                    noCache: false,
-                    link: null,
-                  },
-                },
-                {
-                  name: "Dept",
-                  path: "dept",
-                  hidden: false,
-                  component: "system/dept/index",
-                  meta: {
-                    title: "部门管理",
-                    icon: "tree",
-                    noCache: false,
-                    link: null,
-                  },
-                },
+                // {
+                //   name: "User",
+                //   path: "user",
+                //   hidden: false,
+                //   component: "system/user/index",
+                //   meta: {
+                //     title: "用户管理",
+                //     icon: "user",
+                //     noCache: false,
+                //     link: null,
+                //   },
+                // },
+                // {
+                //   name: "Role",
+                //   path: "role",
+                //   hidden: false,
+                //   component: "system/role/index",
+                //   meta: {
+                //     title: "角色管理",
+                //     icon: "peoples",
+                //     noCache: false,
+                //     link: null,
+                //   },
+                // },
+                // {
+                //   name: "Menu",
+                //   path: "menu",
+                //   hidden: false,
+                //   component: "system/menu/index",
+                //   meta: {
+                //     title: "菜单管理",
+                //     icon: "tree-table",
+                //     noCache: false,
+                //     link: null,
+                //   },
+                // },
+                // {
+                //   name: "Dept",
+                //   path: "dept",
+                //   hidden: false,
+                //   component: "system/dept/index",
+                //   meta: {
+                //     title: "部门管理",
+                //     icon: "tree",
+                //     noCache: false,
+                //     link: null,
+                //   },
+                // },
                 {
                   name: "Post",
                   path: "post",
@@ -129,30 +129,6 @@ const usePermissionStore = defineStore("permission", {
                     link: null,
                   },
                 },
-                // {
-                //   name: "Config",
-                //   path: "config",
-                //   hidden: false,
-                //   component: "system/config/index",
-                //   meta: {
-                //     title: "参数设置",
-                //     icon: "edit",
-                //     noCache: false,
-                //     link: null,
-                //   },
-                // },
-                // {
-                //   name: "Notice",
-                //   path: "notice",
-                //   hidden: false,
-                //   component: "system/notice/index",
-                //   meta: {
-                //     title: "通知公告",
-                //     icon: "message",
-                //     noCache: false,
-                //     link: null,
-                //   },
-                // },
               ],
             },
           ],
@@ -260,6 +236,8 @@ export const loadView = (view) => {
   console.log(modules);
 
   for (const path in modules) {
+    console.log(path, 5555);
+
     const dir = path.split("pages/firstDemo/views/")[1].split(".vue")[0];
     if (dir === view) {
       // import.meta.glob 引入的文件，把路径当做方法名进行执行，就会导入对应的文件
