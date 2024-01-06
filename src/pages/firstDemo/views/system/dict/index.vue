@@ -192,13 +192,15 @@
       </el-table-column>
     </el-table>
 
-    <pagination
+    <pro-pagination
       v-show="total > 0"
       :total="total"
       v-model:page="queryParams.pageNum"
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
-    />
+      @update:page="updatePage"
+      @update:limit="updateLimit"
+    ></pro-pagination>
 
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
@@ -293,6 +295,14 @@ function getList() {
       loading.value = false;
     }
   );
+}
+
+function updatePage(val) {
+  console.log(val);
+}
+
+function updateLimit(val) {
+  console.log(val);
 }
 /** 取消按钮 */
 function cancel() {
