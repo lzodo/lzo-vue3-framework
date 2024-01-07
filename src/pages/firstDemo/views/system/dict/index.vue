@@ -1,7 +1,7 @@
 <template>
   <el-container direction="vertical" class="app-container">
     <el-header height="auto" v-show="showSearch">
-      <pro-search-header :data="headerColumn" :dictData="['sys_normal_disable']" @search="handleQuery" @reset="reset"></pro-search-header>
+      <pro-search-header :data="headerColumn" :dictData="['sys_normal_disable']" @search="search" @reset="reset"></pro-search-header>
     </el-header>
     <el-main class="table-main">
       <div class="table-top-handle">
@@ -35,7 +35,7 @@
         @current-change="handleCurrentChange"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column :key="Math.random()" label="操作" fixed="right" align="center" width="150" class-name="small-padding fixed-width">
+        <el-table-column label="操作" fixed="right" align="center" width="150" class-name="small-padding fixed-width">
           <template #default="scope">
             <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:dict:edit']">修改</el-button>
             <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
@@ -44,13 +44,7 @@
       </pro-table-list>
     </el-main>
     <el-footer>
-      <pro-pagination
-        v-show="total > 0"
-        :total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
-        @pagination="getList"
-      ></pro-pagination>
+      <pro-pagination v-show="total > 0" :total="total" v-model:page="pageNum" v-model:limit="pageSize" @pagination="getList"></pro-pagination>
     </el-footer>
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
@@ -93,27 +87,25 @@ import { listType, getType, delType, addType, updateType, refreshCache } from '@
  * const { proxy }  = getCurrentInstance();  //  方式二，此方法在开发环境以及生产环境下都能放到组件上下文对象（推荐）
  */
 const { proxy } = getCurrentInstance();
-console.log('proxy:', proxy);
-
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
-console.log(sys_normal_disable, 465789);
 
-const typeList = ref([]);
-const open = ref(false);
 const loading = ref(true);
+const typeList = ref([]);
+const total = ref(0);
+const pageNum = ref(1);
+const pageSize = ref(10);
+
+const open = ref(false);
 const showSearch = ref(true);
 const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
-const total = ref(0);
 const title = ref('');
 const dateRange = ref([]);
 
 const data = reactive({
   form: {},
   queryParams: {
-    pageNum: 1,
-    pageSize: 10,
     dictName: undefined,
     dictType: undefined,
     status: undefined,
@@ -129,45 +121,55 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询字典类型列表 */
 function getList() {
   loading.value = true;
-  listType(proxy.addDateRange(queryParams.value, dateRange.value)).then(response => {
+
+  listType(proxy.addDateRange({ ...queryParams.value, pageNum: pageNum.value, pageSize: pageSize.value }, dateRange.value)).then(response => {
     typeList.value = response.rows;
     total.value = response.total;
     loading.value = false;
   });
 }
 
-function updatePage(val) {}
-
-function updateLimit(val) {}
 /** 取消按钮 */
 function cancel() {
   open.value = false;
   reset();
 }
 /** 头部搜索 */
-function search() {}
-/** 表单重置 */
-function reset() {
-  form.value = {
-    dictId: undefined,
-    dictName: undefined,
-    dictType: undefined,
-    status: '0',
-    remark: undefined,
-  };
-  proxy.resetForm('dictRef');
-}
-/** 搜索按钮操作 */
-function handleQuery() {
-  queryParams.value.pageNum = 1;
+function search(data = {}) {
+  // this.pageIndex = 1;
+  // this.searchForm = { ...data };
+  // this.loadData();
+
+  queryParams.value = { ...data };
+  pageNum.value = 1;
+  pageSize.value = 10;
+
   getList();
 }
-/** 重置按钮操作 */
-function resetQuery() {
-  dateRange.value = [];
-  proxy.resetForm('queryRef');
-  handleQuery();
+
+/** 表单重置 */
+function reset(data = {}) {
+  // this.searchForm = { ...data };
+  // this.pageIndex = 1;
+  // this.loadData();
+
+  form.value = { ...data };
+  queryParams.value = { ...data };
+  pageNum.value = 1;
+  // proxy.resetForm('dictRef');
+  getList();
 }
+/** 搜索按钮操作 */
+// function handleQuery() {
+//   queryParams.value.pageNum = 1;
+//   getList();
+// }
+/** 重置按钮操作 */
+// function resetQuery() {
+//   dateRange.value = [];
+//   proxy.resetForm('queryRef');
+//   handleQuery();
+// }
 /** 新增按钮操作 */
 function handleAdd() {
   reset();
@@ -245,6 +247,4 @@ function handleRefreshCache() {
     useDictStore().cleanDict();
   });
 }
-
-getList();
 </script>

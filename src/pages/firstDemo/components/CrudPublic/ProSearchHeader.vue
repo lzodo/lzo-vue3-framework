@@ -1,10 +1,10 @@
 <template>
   <el-form class="filter-form" @submit.native.prevent ref="searchForm" :inline="true" :model="searchForm" label-position="right">
-    <div class="header-warp" style="display: inline-block" :class="{ 'filter-put': isPackUp, fixedCount4: columnCount == 4 }" ref="inputWarp">
+    <div class="header-warp" :class="{ 'filter-put': isPackUp, fixedCount4: columnCount == 4 }" ref="inputWarp">
       <template v-for="(item, k) in data || []">
         <el-form-item :label="item.label" :prop="item.fielId" :label-width="item.width || '70px'">
           <template v-if="item.type == 'cascader'">
-            <el-cascader
+            <!-- <el-cascader
               class="filter-cascader"
               :props="item.cascaderProps"
               :options="getMap(item.optionsFielId)"
@@ -12,27 +12,19 @@
               clearable
               filterable
               @change="data => cascaderChange(data, item)"
-            ></el-cascader>
+            ></el-cascader> -->
           </template>
           <div v-else>
-            <g-form-item
-              :isOnlyView="false"
-              :itemData="item"
-              :formObj="searchForm"
-              :thisObj="thisObj"
-              @clearSelect="clearSelect"
-              @searchFormEnter="search"
-            ></g-form-item>
+            <g-form-item :isOnlyView="false" :itemData="item" :formObj="searchForm" :thisObj="thisObj" @clearSelect="clearSelect"></g-form-item>
+            <!-- @searchFormEnter="search" -->
           </div>
         </el-form-item>
       </template>
     </div>
     <el-form-item class="fr filter-btns">
-      <pro-button type="search" @click="search">搜索</pro-button>
-      <pro-button type="reset" @click="reset">重置</pro-button>
-      <el-button @click="isPackUp = !isPackUp" v-if="!hideScale">
-        {{ isPackUp ? '展开' : '收起' }}
-      </el-button>
+      <pro-button type="search" @click="searchQuery">搜索</pro-button>
+      <pro-button type="reset" @click="reset">重置{{ count }}94</pro-button>
+      <el-button @click="isPackUp = !isPackUp" v-if="!hideScale">{{ isPackUp ? '展开' : '收起' }}</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -47,6 +39,7 @@ export default {
       searchForm: {},
       hideScale: true,
       gDictMap: {},
+      count: 1,
     };
   },
   mixins: [headerFromTableMixin],
@@ -108,9 +101,9 @@ export default {
     this.searchForm = { ...this.fromData };
     this.$emit('search', this.searchForm); // 没接口先不搜索
   },
-  activated() {
-    this.$emit('search', this.searchForm); // 没接口先不搜索
-  },
+  // activated() {
+  //   this.$emit('search', this.searchForm); // 没接口先不搜索
+  // },
   mounted() {
     // 判断高度
     if (this.$refs['inputWarp'].offsetHeight > 60) {
@@ -118,10 +111,10 @@ export default {
     }
   },
   methods: {
-    cascaderChange(data, item) {
-      console.log(data, this.searchForm);
-      this.$set(this.searchForm, item.fielId, data[data.length - 1]);
-    },
+    // cascaderChange(data, item) {
+    //   console.log(data, this.searchForm);
+    //   this.$set(this.searchForm, item.fielId, data[data.length - 1]);
+    // },
     getMap(str) {
       return this[str];
     },
@@ -129,7 +122,8 @@ export default {
       delete this.searchForm[fielId];
       this.$emit('search', this.searchForm);
     },
-    search() {
+    searchQuery() {
+      this.count++;
       this.$emit('search', this.searchForm);
     },
     reset() {
@@ -172,8 +166,9 @@ export default {
   }
   .header-warp {
     flex: 1;
-    display: flex;
-    flex-direction: row;
+    display: inline-block;
+    // display: flex;
+    // flex-direction: row;
     &.fixedCount4 {
       width: 100%;
       display: flex !important;

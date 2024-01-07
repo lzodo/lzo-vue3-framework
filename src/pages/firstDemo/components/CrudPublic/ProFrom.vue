@@ -2,7 +2,7 @@
   <div>
     <el-form
       @submit.native.prevent
-      class="yl-from"
+      class="pro-from"
       ref="ruleFormRef"
       :disabled="disabledForm"
       :class="{ inline: !blockLine }"
@@ -26,15 +26,6 @@
             <div v-if="item.type == 'middleInster'">
               <slot name="middleInster" :scope="ruleForm"></slot>
             </div>
-            <!-- <div v-else-if="item.type == 'date' && item.dateType == 'datetime'">
-              <el-date-picker
-                v-model="ruleForm[item.fielId]"
-                type="datetime"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="选择日期时间"
-                :clearable="item.clearable"
-              ></el-date-picker>
-            </div> -->
             <div v-else>
               <gFormItem
                 :isOnlyView="disabledForm || item.isOnlyView || Boolean(isEdit && item.isEditOnlyView)"
@@ -56,7 +47,7 @@
 </template>
 
 <script>
-import headerFromTableMixin from '@/pages/tablePass/mixin/headerFromTableMixin.js';
+import headerFromTableMixin from '@/pages/firstDemo/mixin/headerFromTableMixin.js';
 import { rulesObj, checkRules } from '@/utils/rules.js';
 
 export default {
@@ -69,6 +60,8 @@ export default {
         phone: [...rulesObj.fill, ...rulesObj.phone],
         onlyphone: rulesObj.phone,
       },
+
+      gDictMap: {},
     };
   },
   mixins: [headerFromTableMixin],
@@ -158,7 +151,7 @@ export default {
     },
     async initDict() {
       // 获取用到的字典数据
-      this.useDictList(this.dictData);
+      // this.useDictList(this.dictData);
     },
     uploadFiles(fileData, fileBlob, itemData, formObj) {
       this.$emit('uploadFiles', fileData, fileBlob, itemData, formObj);
@@ -189,11 +182,18 @@ export default {
     this.initDict();
     this.initApiData();
   },
+  setup(props, ctx) {
+    // 获取用到的字典数据
+    const { proxy } = getCurrentInstance();
+    // main.js 全局绑定 useDict
+    const gDictMap = props.dictData.length ? proxy.useDict([...props.dictData]) : {};
+    return { ...gDictMap };
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.yl-from {
+.pro-from {
   &.el-form.inline {
     display: flex;
     flex-wrap: wrap;

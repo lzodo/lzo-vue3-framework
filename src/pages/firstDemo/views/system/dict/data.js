@@ -71,34 +71,6 @@ export const headerColumnList = [
     fielId: 'dictType',
   },
   {
-    label: '字典类型',
-    fielId: 'dictType',
-  },
-  {
-    label: '字典类型',
-    fielId: 'dictType',
-  },
-  {
-    label: '字典类型',
-    fielId: 'dictType',
-  },
-  {
-    label: '字典类型',
-    fielId: 'dictType',
-  },
-  {
-    label: '字典类型',
-    fielId: 'dictType',
-  },
-  {
-    label: '字典类型',
-    fielId: 'dictType',
-  },
-  {
-    label: '字典类型',
-    fielId: 'dictType',
-  },
-  {
     label: '状态',
     fielId: 'status',
     type: 'select',

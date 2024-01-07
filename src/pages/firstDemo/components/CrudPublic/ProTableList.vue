@@ -1,5 +1,4 @@
 <template>
-  <!-- :height="'100%'" -->
   <el-table
     class="table-list-cpn"
     ref="multipleTable"
@@ -17,7 +16,7 @@
     <el-table-column type="index" width="50" v-if="showIndex" label="序号"></el-table-column>
 
     <el-table-column
-      v-for="(item, k) in tableColumn || []"
+      v-for="item in tableColumn || []"
       :key="item.fielId"
       :align="align"
       :label="item.label"
@@ -36,9 +35,6 @@
           <div class="conter one-omit" v-else-if="item.type == 'datetime'">
             {{ $gtools.dateformat(getLabels(scope.row, item)) }}
           </div>
-          <!-- <div class="conter one-omit" v-else-if="item.type == 'businessDataFormList'" @click="clickCopy($event, scope.row, item)">
-              {{ getFormValue(scope.row, item) }}
-            </div> -->
           <div v-else>
             <div class="conter one-omit" :class="{ islink: item.events }" @click="clickItem(scope.row, item.events)">
               <span>{{ getLabels(scope.row, item) || '--' }}</span>
@@ -48,7 +44,6 @@
         </div>
       </template>
     </el-table-column>
-
     <slot></slot>
   </el-table>
 </template>
@@ -138,32 +133,20 @@ export default {
     this.initLoad();
   },
   methods: {
-    // 业务数据明细特殊处理
-    getFormValue(row, itemData) {
-      if (!row.businessDataFormList || !row.businessDataFormList.length) {
-        return '--';
-      }
-      let form = row.businessDataFormList.filter(item => item.formId == itemData.formId && item.dataField == itemData.fielId);
-      if (form.length) {
-        return form[0]['businessBasicCode'];
-      } else {
-        return '--';
-      }
-    },
-    clickCopy(e, row, itemData) {
-      if (/.*(upload_).*/.test(itemData.fielId)) {
-        if (navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(e.target.innerText); // 复制，写入剪切板
-          console.log('clipboard');
-        } else {
-          window.getSelection().selectAllChildren(e.target);
-          document.execCommand('copy');
-          window.getSelection().removeAllRanges(); //清除选择的内容
-          console.log('execCommand');
-        }
-        this.$message.success({ showClose: true, message: '复制成功', duration: 1500 });
-      }
-    },
+    // clickCopy(e, row, itemData) {
+    //   if (/.*(upload_).*/.test(itemData.fielId)) {
+    //     if (navigator.clipboard.writeText) {
+    //       navigator.clipboard.writeText(e.target.innerText); // 复制，写入剪切板
+    //       console.log('clipboard');
+    //     } else {
+    //       window.getSelection().selectAllChildren(e.target);
+    //       document.execCommand('copy');
+    //       window.getSelection().removeAllRanges(); //清除选择的内容
+    //       console.log('execCommand');
+    //     }
+    //     this.$message.success({ showClose: true, message: '复制成功', duration: 1500 });
+    //   }
+    // },
 
     // 初始化加载
     initLoad() {
