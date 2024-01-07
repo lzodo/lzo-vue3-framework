@@ -1,12 +1,11 @@
-import useDictStore from "@/pages/firstDemo/store/dict";
-import { getDicts } from "@/pages/firstDemo/api/system/dict/data";
+import useDictStore from '@/pages/firstDemo/store/dict';
+import { getDicts } from '@/pages/firstDemo/api/system/dict/data';
 
 /**
  * 获取字典数据
  */
 export function useDict(...args) {
   const res = ref({});
-  console.log(args, 416123);
   return (() => {
     args.forEach((dictType, index) => {
       res.value[dictType] = [];
@@ -17,9 +16,9 @@ export function useDict(...args) {
         res.value[dictType] = dicts;
       } else {
         // 返回调用接口获取
-        getDicts(dictType).then((resp) => {
+        getDicts(dictType).then(resp => {
           // 存入res中
-          res.value[dictType] = resp.data.map((p) => ({
+          res.value[dictType] = resp.data.map(p => ({
             label: p.dictLabel,
             value: p.dictValue,
             elTagType: p.listClass,

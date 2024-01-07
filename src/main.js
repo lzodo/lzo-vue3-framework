@@ -20,6 +20,9 @@ import { download } from '@/utils/request';
 // 全局方法
 import gtools from './gtools'; // gtools
 
+// 谷歌浏览器控制台优化
+import 'default-passive-events';
+
 // svg图标
 import 'virtual:svg-icons-register';
 import SvgIcon from '@/components/SvgIcon';

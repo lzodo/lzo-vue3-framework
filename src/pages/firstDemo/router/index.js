@@ -1,5 +1,5 @@
 /* Layout */
-import Layout from "@/layout";
+import Layout from '@/layout';
 
 /**
  * Note: 路由配置项
@@ -26,41 +26,40 @@ import Layout from "@/layout";
 // 项目公共路由
 export const constantRoutes = [
   {
-    path: "/login",
-    component: () => import("@/pages/firstDemo/views/login"),
+    path: '/login',
+    component: () => import('@/pages/firstDemo/views/login'),
     hidden: true,
   },
   {
-    path: "/register",
-    component: () => import("@/pages/firstDemo/views/register"),
+    path: '/register',
+    component: () => import('@/pages/firstDemo/views/register'),
     hidden: true,
   },
 
   {
-    path: "",
+    path: '',
     component: Layout,
-    redirect: "/index",
+    redirect: '/index',
     children: [
       {
-        path: "/index",
-        component: () => import("@/pages/firstDemo/views/index"),
-        name: "Index",
-        meta: { title: "首页", icon: "dashboard", affix: true },
+        path: '/index',
+        component: () => import('@/pages/firstDemo/views/index'),
+        name: 'Index',
+        meta: { title: '首页', icon: 'dashboard', affix: true },
       },
     ],
   },
   {
-    path: "/user",
+    path: '/user',
     component: Layout,
     hidden: true,
-    redirect: "noredirect",
+    redirect: 'noredirect',
     children: [
       {
-        path: "profile",
-        component: () =>
-          import("@/pages/firstDemo/views/system/user/profile/index"),
-        name: "Profile",
-        meta: { title: "个人中心", icon: "user" },
+        path: 'profile',
+        component: () => import('@/pages/firstDemo/views/system/user/profile/index'),
+        name: 'Profile',
+        meta: { title: '个人中心', icon: 'user' },
       },
     ],
   },
@@ -69,44 +68,44 @@ export const constantRoutes = [
 // 动态路由，基于用户权限动态去加载
 export const dynamicRoutes = [
   {
-    path: "/system/user-auth",
+    path: '/system/user-auth',
     component: Layout,
     hidden: true,
-    permissions: ["system:user:edit"],
+    permissions: ['system:user:edit'],
     children: [
       {
-        path: "role/:userId(\\d+)",
-        component: () => import("@/pages/firstDemo/views/system/user/authRole"),
-        name: "AuthRole",
-        meta: { title: "分配角色", activeMenu: "/system/user" },
+        path: 'role/:userId(\\d+)',
+        component: () => import('@/pages/firstDemo/views/system/user/authRole'),
+        name: 'AuthRole',
+        meta: { title: '分配角色', activeMenu: '/system/user' },
       },
     ],
   },
   {
-    path: "/system/role-auth",
+    path: '/system/role-auth',
     component: Layout,
     hidden: true,
-    permissions: ["system:role:edit"],
+    permissions: ['system:role:edit'],
     children: [
       {
-        path: "user/:roleId(\\d+)",
-        component: () => import("@/pages/firstDemo/views/system/role/authUser"),
-        name: "AuthUser",
-        meta: { title: "分配用户", activeMenu: "/system/role" },
+        path: 'user/:roleId(\\d+)',
+        component: () => import('@/pages/firstDemo/views/system/role/authUser'),
+        name: 'AuthUser',
+        meta: { title: '分配用户', activeMenu: '/system/role' },
       },
     ],
   },
   {
-    path: "/system/dict-data",
+    path: '/system/dict-data',
     component: Layout,
     hidden: true,
-    permissions: ["system:dict:list"],
+    permissions: ['system:dict:list'],
     children: [
       {
-        path: "index/:dictId(\\d+)",
-        component: () => import("@/pages/firstDemo/views/system/dict/data"),
-        name: "Data",
-        meta: { title: "字典数据", activeMenu: "/system/dict" },
+        path: 'index/:dictId(\\d+)',
+        component: () => import('@/pages/firstDemo/views/system/dict/data'),
+        name: 'Data',
+        meta: { title: '字典数据', activeMenu: '/system/dict' },
       },
     ],
   },

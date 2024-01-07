@@ -15,38 +15,40 @@
   >
     <el-table-column type="selection" :reserve-selection="true" width="55" v-if="selection"></el-table-column>
     <el-table-column type="index" width="50" v-if="showIndex" label="序号"></el-table-column>
-    <template v-for="(item, k) in tableColumn || []">
-      <el-table-column
-        :align="align"
-        :label="item.label"
-        :prop="item.fielId"
-        :min-width="(item.width || 100) + 'px'"
-        :show-overflow-tooltip="!excludeTipList.includes(item.fielId)"
-      >
-        <template #default="scope">
-          <div class="conter-wrap">
-            <div class="conter one-omit" v-if="item.type == 'areaId'">
-              {{ `${scope.row.province || ''}${scope.row.city || ''}${scope.row.district || ''}${scope.row.street || ''}` || '--' }}
-            </div>
-            <div class="conter one-omit" v-else-if="item.type == 'select'">
-              {{ $gtools.codeToName(getLabels(scope.row, item), thisObj[item.optionsFielId] || [], item.valueKey, item.labelFile) }}
-            </div>
-            <div class="conter one-omit" v-else-if="item.type == 'datetime'">
-              {{ $gtools.dateformat(getLabels(scope.row, item)) }}
-            </div>
-            <!-- <div class="conter one-omit" v-else-if="item.type == 'businessDataFormList'" @click="clickCopy($event, scope.row, item)">
+
+    <el-table-column
+      v-for="(item, k) in tableColumn || []"
+      :key="item.fielId"
+      :align="align"
+      :label="item.label"
+      :prop="item.fielId"
+      :min-width="(item.width || 100) + 'px'"
+      :show-overflow-tooltip="!excludeTipList.includes(item.fielId)"
+    >
+      <template #default="scope">
+        <div class="conter-wrap">
+          <div class="conter one-omit" v-if="item.type == 'areaId'">
+            {{ `${scope.row.province || ''}${scope.row.city || ''}${scope.row.district || ''}${scope.row.street || ''}` || '--' }}
+          </div>
+          <div class="conter one-omit" v-else-if="item.type == 'select'">
+            {{ $gtools.codeToName(getLabels(scope.row, item), thisObj[item.optionsFielId] || [], item.valueKey, item.labelFile) }}
+          </div>
+          <div class="conter one-omit" v-else-if="item.type == 'datetime'">
+            {{ $gtools.dateformat(getLabels(scope.row, item)) }}
+          </div>
+          <!-- <div class="conter one-omit" v-else-if="item.type == 'businessDataFormList'" @click="clickCopy($event, scope.row, item)">
               {{ getFormValue(scope.row, item) }}
             </div> -->
-            <div v-else>
-              <div class="conter one-omit" :class="{ islink: item.events }" @click="clickItem(scope.row, item.events)">
-                <span>{{ getLabels(scope.row, item) || '--' }}</span>
-                <span v-if="item.unit">&nbsp;{{ item.unit }}</span>
-              </div>
+          <div v-else>
+            <div class="conter one-omit" :class="{ islink: item.events }" @click="clickItem(scope.row, item.events)">
+              <span>{{ getLabels(scope.row, item) || '--' }}</span>
+              <span v-if="item.unit">&nbsp;{{ item.unit }}</span>
             </div>
           </div>
-        </template>
-      </el-table-column>
-    </template>
+        </div>
+      </template>
+    </el-table-column>
+
     <slot></slot>
   </el-table>
 </template>
