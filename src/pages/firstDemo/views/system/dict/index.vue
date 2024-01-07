@@ -250,7 +250,13 @@ import {
   refreshCache,
 } from "@/pages/firstDemo/api/system/dict/type";
 
+/**
+ * const { ctx }  = getCurrentInstance();  //  方式一，这种方式只能在开发环境下使用，生产环境下//的ctx将访问不到
+ * const { proxy }  = getCurrentInstance();  //  方式二，此方法在开发环境以及生产环境下都能放到组件上下文对象（推荐）
+ */
 const { proxy } = getCurrentInstance();
+console.log("proxy:", proxy);
+
 const { sys_normal_disable } = proxy.useDict("sys_normal_disable");
 
 const typeList = ref([]);
@@ -297,13 +303,9 @@ function getList() {
   );
 }
 
-function updatePage(val) {
-  console.log(val);
-}
+function updatePage(val) {}
 
-function updateLimit(val) {
-  console.log(val);
-}
+function updateLimit(val) {}
 /** 取消按钮 */
 function cancel() {
   open.value = false;
