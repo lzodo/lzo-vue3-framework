@@ -1,49 +1,45 @@
 <template>
-  <div>
-    <el-form
-      @submit.native.prevent
-      class="pro-from"
-      ref="ruleFormRef"
-      :disabled="disabledForm"
-      :class="{ inline: !blockLine }"
-      :model="ruleForm"
-      :label-width="labelWidth + 'px'"
-    >
-      <template v-for="(item, k) in data || []">
-        <!-- isOnlyViewNotLoad=true 预览不加载 -->
-        <el-form-item
-          class="inline-item"
-          :key="`${item.label}-${k}`"
-          :label="item.label"
-          :prop="item.fielId"
-          :rules="checkRules(rules, item)"
-          :label-width="item.hideLabel ? 0 + 'px' : ''"
-          :class="{ block: blockList.includes(item.fielId) || item.block }"
-          v-if="isLoad(item.delayLoad) && (disabledForm && item.isOnlyViewNotLoad ? false : true)"
-        >
-          <template>
-            <!-- 临时插入特殊的东西 -->
-            <div v-if="item.type == 'middleInster'">
-              <slot name="middleInster" :scope="ruleForm"></slot>
-            </div>
-            <div v-else>
-              <gFormItem
-                :isOnlyView="disabledForm || item.isOnlyView || Boolean(isEdit && item.isEditOnlyView)"
-                :itemData="item"
-                :formObj="ruleForm"
-                :thisObj="thisObj"
-                @focus="inputFocus"
-                @uploadFiles="uploadFiles"
-                @deleteFile="deleteFile"
-                @selectChange="selectChange"
-              ></gFormItem>
-            </div>
-          </template>
-        </el-form-item>
-      </template>
-    </el-form>
+  <el-form
+    @submit.native.prevent
+    class="pro-from"
+    ref="ruleFormRef"
+    :disabled="disabledForm"
+    :class="{ inline: !blockLine }"
+    :model="ruleForm"
+    :label-width="labelWidth + 'px'"
+  >
+    <template v-for="(item, k) in data || []">
+      <!-- isOnlyViewNotLoad=true 预览不加载 -->
+      <el-form-item
+        class="inline-item"
+        :key="`${item.label}-${k}`"
+        :label="item.label"
+        :prop="item.fielId"
+        :rules="checkRules(rules, item)"
+        :label-width="item.hideLabel ? 0 + 'px' : ''"
+        :class="{ block: blockList.includes(item.fielId) || item.block }"
+        v-if="isLoad(item.delayLoad)"
+      >
+        <!-- 临时插入特殊的东西 -->
+        <div v-if="item.type == 'middleInster'">
+          <slot name="middleInster" :scope="ruleForm"></slot>
+        </div>
+        <div v-else>
+          <gFormItem
+            :isOnlyView="disabledForm || item.isOnlyView || Boolean(isEdit && item.isEditOnlyView)"
+            :itemData="item"
+            :formObj="ruleForm"
+            :thisObj="thisObj"
+            @focus="inputFocus"
+            @uploadFiles="uploadFiles"
+            @deleteFile="deleteFile"
+            @selectChange="selectChange"
+          ></gFormItem>
+        </div>
+      </el-form-item>
+    </template>
     <slot></slot>
-  </div>
+  </el-form>
 </template>
 
 <script>
@@ -129,7 +125,7 @@ export default {
   },
   computed: {
     thisObj() {
-      return { ...this, ...this.otherObj };
+      return this;
     },
     ruleForm() {
       return this.ruleFormData;
@@ -179,6 +175,8 @@ export default {
     },
   },
   created() {
+    // console.log(this.ruleForm, 456789555);
+
     this.initDict();
     this.initApiData();
   },
@@ -207,9 +205,9 @@ export default {
       }
     }
   }
-  :deep(:disabled) {
-    background-color: #f4f8ff;
-    color: #777;
-  }
+  // :deep(:disabled) {
+  //   background-color: #f4f8ff;
+  //   color: #777;
+  // }
 }
 </style>

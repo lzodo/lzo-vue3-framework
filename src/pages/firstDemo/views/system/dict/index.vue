@@ -1,29 +1,21 @@
 <template>
   <el-container direction="vertical" class="app-container">
+    <!-- 搜索 -->
     <el-header height="auto" v-show="showSearch">
       <pro-search-header :data="headerColumn" :dictData="['sys_normal_disable']" @search="search" @reset="reset"></pro-search-header>
     </el-header>
     <el-main class="table-main">
       <div class="table-top-handle">
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['system:dict:add']">新增</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate" v-hasPermi="['system:dict:edit']">修改</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:dict:remove']">删除</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['system:dict:export']">导出</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" plain icon="Refresh" @click="handleRefreshCache" v-hasPermi="['system:dict:remove']">刷新缓存</el-button>
-          </el-col>
-          <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
-        </el-row>
+        <div class="btns">
+          <el-button type="primary" plain icon="Plus" @click="formHandler" v-hasPermi="['system:dict:add']">新增</el-button>
+          <el-button type="success" plain icon="Edit" :disabled="single" @click="formHandler" v-hasPermi="['system:dict:edit']">修改</el-button>
+          <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:dict:remove']">删除</el-button>
+          <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['system:dict:export']">导出</el-button>
+          <el-button type="danger" plain icon="Refresh" @click="handleRefreshCache" v-hasPermi="['system:dict:remove']">刷新缓存</el-button>
+        </div>
+        <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
       </div>
+      <!-- 表格 -->
       <pro-table-list
         ref="tableList"
         :tableData="typeList"
@@ -37,70 +29,55 @@
       >
         <el-table-column label="操作" fixed="right" align="center" width="150" class-name="small-padding fixed-width">
           <template #default="scope">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:dict:edit']">修改</el-button>
+            <el-button link type="primary" icon="Edit" @click="formHandler(scope.row)" v-hasPermi="['system:dict:edit']">修改</el-button>
             <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
           </template>
         </el-table-column>
       </pro-table-list>
     </el-main>
+    <!-- 分页 -->
     <el-footer>
       <pro-pagination v-show="total > 0" :total="total" v-model:page="pageNum" v-model:limit="pageSize" @pagination="getList"></pro-pagination>
     </el-footer>
-    <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-      <el-form ref="dictRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="字典名称" prop="dictName">
-          <el-input v-model="form.dictName" placeholder="请输入字典名称" />
-        </el-form-item>
-        <el-form-item label="字典类型" prop="dictType">
-          <el-input v-model="form.dictType" placeholder="请输入字典类型" />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
-        </div>
-      </template>
+    <!-- 弹窗 -->
+    <el-dialog :title="dialogTitle" append-to-body v-model="dialogVisible" width="600px">
+      <div class="dialog-main">
+        <PageForm @close="cancel" :id="rowInfo.id" v-if="dialogVisible" :isOnlyView="dialogIsOnlyView"></PageForm>
+      </div>
     </el-dialog>
   </el-container>
 </template>
 
 <script setup name="Dict">
+import PageForm from './form.vue';
 import { headerColumnList, tableColumnList } from './data';
+import useDictStore from '@/pages/firstDemo/store/dict';
+import { listType, delType, addType, updateType, refreshCache } from '@/pages/firstDemo/api/system/dict/type';
+
 const headerColumn = computed(() => [...headerColumnList]);
 const tableColumn = computed(() => [...tableColumnList]);
-
-import useDictStore from '@/pages/firstDemo/store/dict';
-import { listType, getType, delType, addType, updateType, refreshCache } from '@/pages/firstDemo/api/system/dict/type';
 
 /**
  * const { ctx }  = getCurrentInstance();  //  方式一，这种方式只能在开发环境下使用，生产环境下//的ctx将访问不到
  * const { proxy }  = getCurrentInstance();  //  方式二，此方法在开发环境以及生产环境下都能放到组件上下文对象（推荐）
  */
 const { proxy } = getCurrentInstance();
-const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
+// const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
 const loading = ref(true);
 const typeList = ref([]);
 const total = ref(0);
 const pageNum = ref(1);
 const pageSize = ref(10);
+const dialogVisible = ref(false);
+const dialogTitle = ref('');
+const rowInfo = ref({});
+const dialogIsOnlyView = ref(false);
 
-const open = ref(false);
 const showSearch = ref(true);
 const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
-const title = ref('');
 const dateRange = ref([]);
 
 const data = reactive({
@@ -110,13 +87,9 @@ const data = reactive({
     dictType: undefined,
     status: undefined,
   },
-  rules: {
-    dictName: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
-    dictType: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
-  },
 });
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询字典类型列表 */
 function getList() {
@@ -131,7 +104,7 @@ function getList() {
 
 /** 取消按钮 */
 function cancel() {
-  open.value = false;
+  dialogVisible.value = false;
   reset();
 }
 /** 头部搜索 */
@@ -159,23 +132,7 @@ function reset(data = {}) {
   // proxy.resetForm('dictRef');
   getList();
 }
-/** 搜索按钮操作 */
-// function handleQuery() {
-//   queryParams.value.pageNum = 1;
-//   getList();
-// }
-/** 重置按钮操作 */
-// function resetQuery() {
-//   dateRange.value = [];
-//   proxy.resetForm('queryRef');
-//   handleQuery();
-// }
-/** 新增按钮操作 */
-function handleAdd() {
-  reset();
-  open.value = true;
-  title.value = '添加字典类型';
-}
+
 /** 多选框选中数据 */
 function handleSelectionChange(selection) {
   ids.value = selection.map(item => item.dictId);
@@ -187,35 +144,53 @@ function handleCurrentChange(select) {
   console.log(select);
 }
 /** 修改按钮操作 */
-function handleUpdate(row) {
-  reset();
-  const dictId = row.dictId || ids.value;
-  getType(dictId).then(response => {
-    form.value = response.data;
-    open.value = true;
-    title.value = '修改字典类型';
-  });
+function formHandler(row = {}, isOnlyView) {
+  // 弹窗
+  if (row.dictId) {
+    row.id = row.dictId;
+    dialogTitle.value = '编辑记录';
+    rowInfo.value = row;
+  } else {
+    dialogTitle.value = '新增记录';
+    rowInfo.value = {};
+  }
+
+  if (isOnlyView) {
+    this.dialogTitle = '查看';
+  }
+
+  dialogIsOnlyView.value = isOnlyView;
+  dialogVisible.value = true;
+
+  // 子页面
+  // this.$router.push({
+  //   path: '/xxx',
+  //   query: {
+  //     id: row.id || '',
+  //     isOnlyView,
+  //   },
+  // });
 }
 /** 提交按钮 */
-function submitForm() {
-  proxy.$refs['dictRef'].validate(valid => {
-    if (valid) {
-      if (form.value.dictId != undefined) {
-        updateType(form.value).then(response => {
-          proxy.$modal.msgSuccess('修改成功');
-          open.value = false;
-          getList();
-        });
-      } else {
-        addType(form.value).then(response => {
-          proxy.$modal.msgSuccess('新增成功');
-          open.value = false;
-          getList();
-        });
-      }
-    }
-  });
-}
+// function submitForm() {
+//   proxy.$refs['dictRef'].validate(valid => {
+//     if (valid) {
+//       if (form.value.dictId != undefined) {
+//         updateType(form.value).then(response => {
+//           proxy.$modal.msgSuccess('修改成功');
+//           open.value = false;
+//           getList();
+//         });
+//       } else {
+//         addType(form.value).then(response => {
+//           proxy.$modal.msgSuccess('新增成功');
+//           open.value = false;
+//           getList();
+//         });
+//       }
+//     }
+//   });
+// }
 /** 删除按钮操作 */
 function handleDelete(row) {
   const dictIds = row.dictId || ids.value;
@@ -248,3 +223,5 @@ function handleRefreshCache() {
   });
 }
 </script>
+
+<style></style>
