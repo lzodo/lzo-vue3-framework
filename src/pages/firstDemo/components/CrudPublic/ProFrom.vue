@@ -202,18 +202,14 @@ export default {
       &.block {
         width: 100%;
       }
-      ::v-deep .el-input {
+      :deep(.el-input) {
         width: 100%;
       }
     }
   }
-  ::v-deep :disabled {
+  :deep(:disabled) {
     background-color: #f4f8ff;
     color: #777;
   }
-
-  // ::v-deep .el-form-item .el-form-item {
-  //   margin-bottom: 20px;
-  // }
 }
 </style>

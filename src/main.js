@@ -24,7 +24,9 @@ import elementIcons from "@/components/SvgIcon/svgicon";
 
 import "./permission"; // permission control
 
-import { useDict } from "@/utils/dict";
+// 页面的东西
+import { useDict } from "@/pages/firstDemo/utils/dict";
+
 import {
   parseTime,
   resetForm,
@@ -55,7 +57,11 @@ const app = createApp(App);
 
 // 引入CrudPublic下公共组件
 import CrudPublic from "@/pages/firstDemo/components/CrudPublic/index.js";
+// 自己积累的全局组件
+import CostomGlobal from "@/components/CostomGlobal/index.js";
+
 app.use(CrudPublic);
+app.use(CostomGlobal);
 
 // 全局方法挂载
 app.config.globalProperties.useDict = useDict;

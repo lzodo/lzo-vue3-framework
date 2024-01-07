@@ -15,6 +15,132 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="岗位编码" prop="postCode">
+        <el-input
+          v-model="queryParams.postCode"
+          placeholder="请输入岗位编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="岗位名称" prop="postName">
         <el-input
           v-model="queryParams.postName"

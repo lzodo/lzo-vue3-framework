@@ -241,11 +241,11 @@ export default {
   color: #409eff;
 }
 .table-list-cpn {
-  ::v-deep .el-table__cell {
+  :deep(.el-table__cell) {
     padding: 13px 0 !important;
   }
 
-  ::v-deep .el-table__header-wrapper th.el-table__cell {
+  :deep(.el-table__header-wrapper th.el-table__cell) {
     // background-color: $aside-bg-active;
     // color: #fff;
   }

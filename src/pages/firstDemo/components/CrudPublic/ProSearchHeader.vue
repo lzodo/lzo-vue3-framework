@@ -1,9 +1,8 @@
 <template>
   <el-form class="filter-form" @submit.native.prevent ref="searchForm" :inline="true" :model="searchForm" label-position="right">
-    <!-- :label-width="labelWidth + 'px'" -->
     <div class="header-warp" style="display: inline-block" :class="{ 'filter-put': isPackUp, fixedCount4: columnCount == 4 }" ref="inputWarp">
       <template v-for="(item, k) in data || []">
-        <el-form-item :key="`${item.label}-${k}`" :label="item.label" :prop="item.fielId" :label-width="item.width || '80px'">
+        <el-form-item :label="item.label" :prop="item.fielId" :label-width="item.width || '70px'">
           <template v-if="item.type == 'cascader'">
             <el-cascader
               class="filter-cascader"
@@ -39,7 +38,7 @@
 </template>
 
 <script>
-import headerFromTableMixin from '@/pages/tablePass/mixin/headerFromTableMixin.js';
+import headerFromTableMixin from '@/pages/firstDemo/mixin/headerFromTableMixin.js';
 export default {
   data() {
     return {
@@ -47,6 +46,7 @@ export default {
       heightLevel: false,
       searchForm: {},
       hideScale: true,
+      gDictMap: {},
     };
   },
   mixins: [headerFromTableMixin],
@@ -96,7 +96,7 @@ export default {
   },
   computed: {
     thisObj() {
-      return { ...this, ...(this.otherObj || {}) };
+      return this;
     },
   },
   created() {
@@ -106,15 +106,9 @@ export default {
 
     // 进入页面进行搜索
     this.searchForm = { ...this.fromData };
-    if (this.determineCache()) {
-      return;
-    }
     this.$emit('search', this.searchForm); // 没接口先不搜索
   },
   activated() {
-    if (!this.determineCache()) {
-      return;
-    }
     this.$emit('search', this.searchForm); // 没接口先不搜索
   },
   mounted() {
@@ -145,10 +139,14 @@ export default {
       this.$emit('reset', this.searchForm);
     },
 
-    async initDict() {
-      // 获取用到的字典数据
-      this.useDictList(this.dictData);
-    },
+    async initDict() {},
+  },
+  setup(props, ctx) {
+    // 获取用到的字典数据
+    const { proxy } = getCurrentInstance();
+    // main.js 全局绑定 useDict
+    const gDictMap = props.dictData.length ? proxy.useDict([...props.dictData]) : {};
+    return { ...gDictMap };
   },
 };
 </script>
@@ -159,13 +157,8 @@ export default {
   overflow: hidden;
 }
 
-.filter-all {
-  max-height: 52px;
-  overflow: hidden;
-}
 .filter-form {
-  padding-top: 15px;
-  ::v-deep .el-form-item:not(.filter-btns) {
+  :deep(.el-form-item):not(.filter-btns) {
     .el-form-item__content {
       min-width: 217px;
       .el-date-editor--daterange.el-input__inner {
@@ -177,19 +170,18 @@ export default {
       line-height: inherit;
     }
   }
-}
-.header-warp {
-  &.fixedCount4 {
-    width: 100%;
-    display: flex !important;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    .el-form-item {
-      display: flex;
-      width: 23%;
-      ::v-deep {
-        .el-form-item__label {
-        }
+  .header-warp {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    &.fixedCount4 {
+      width: 100%;
+      display: flex !important;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      :deep(.el-form-item) {
+        display: flex;
+        width: 23%;
         .el-form-item__content {
           flex: 1;
           width: unset;
