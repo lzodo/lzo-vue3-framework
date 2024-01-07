@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 // import { MessageBox, Message } from "element-ui";
 
 /**
@@ -7,23 +7,26 @@ import dayjs from "dayjs";
  * @returns
  */
 export function isObj(obj) {
-  return Object.prototype.toString.call(obj) === "[object Object]";
+  return Object.prototype.toString.call(obj) === '[object Object]';
 }
 
 // 格式化日期
-export const dateFormat = (
-  datetime,
-  format = "YYYY-MM-DD HH:mm:ss",
-  isEmpty
-) => {
-  if (datetime == "无" || datetime == "null" || !datetime)
-    return isEmpty ? "" : "--";
+export const dateFormat = (datetime, format = 'YYYY-MM-DD HH:mm:ss', isEmpty) => {
+  if (datetime == '无' || datetime == 'null' || !datetime) return isEmpty ? '' : '--';
   return dayjs(datetime).format(format);
 };
 
-export function dateFormatCustom(time, type = "YYYY-MM-DD") {
+export function dateFormatCustom(time, type = 'YYYY-MM-DD') {
   return dayjs(time).format(type);
 }
+
+// 查找枚举字段文字
+export const showEnmuName = (arr = [], value, valId = 'value', nameId = 'label') => {
+  const obj = arr.find(item => {
+    return item[valId] == value;
+  });
+  return (obj || {})[nameId] || '--';
+};
 
 // ================================== 新 =====================================
 // ================================== = =====================================
@@ -36,7 +39,7 @@ export function dateFormatCustom(time, type = "YYYY-MM-DD") {
  * @returns boolean
  */
 export function isInternetExplor() {
-  if (!!window.ActiveXobject || "ActiveXObject" in window) {
+  if (!!window.ActiveXobject || 'ActiveXObject' in window) {
     return true;
   } else {
     return false;
@@ -55,7 +58,7 @@ export function isIE11() {
 }
 // 中文转拼音isLowerCase:1-字符串全部转小写
 export const chineseToEn = (cnStr, isLowerCase = 1) => {
-  let pinyin = require("js-pinyin");
+  let pinyin = require('js-pinyin');
   pinyin.setOptions({ checkPolyphone: false, charCase: 0 });
   let transferStr = pinyin.getFullChars(cnStr);
   if (isLowerCase) {
@@ -64,18 +67,6 @@ export const chineseToEn = (cnStr, isLowerCase = 1) => {
   return transferStr;
 };
 
-// 查找枚举字段文字
-export const showEnmuName = (
-  arr = [],
-  value,
-  valId = "value",
-  nameId = "label"
-) => {
-  const obj = arr.find((item) => {
-    return item[valId] == value;
-  });
-  return (obj || {})[nameId] || "--";
-};
 /**
  * 获取href参数
  * @param {url}
@@ -90,33 +81,33 @@ export function getURLParams(url) {
 }
 export function getURLQueryString(name) {
   if (!name) {
-    return "";
+    return '';
   }
   const urlParams = getURLParams(window.location.href);
-  return urlParams[name] || "";
+  return urlParams[name] || '';
 }
 
 // 千分位转换
-export const formatThousand = (num) => {
-  if (num === undefined || num === null) return "";
-  let source = String(num).split(".");
-  source[0] = source[0].replace(new RegExp("(\\d)(?=(\\d{3})+$)", "ig"), "$1,");
-  let _tempResult = "";
-  _tempResult = source.join(".");
-  if (_tempResult !== "" && _tempResult.indexOf(".") < 0) {
+export const formatThousand = num => {
+  if (num === undefined || num === null) return '';
+  let source = String(num).split('.');
+  source[0] = source[0].replace(new RegExp('(\\d)(?=(\\d{3})+$)', 'ig'), '$1,');
+  let _tempResult = '';
+  _tempResult = source.join('.');
+  if (_tempResult !== '' && _tempResult.indexOf('.') < 0) {
     _tempResult = _tempResult;
   }
   return _tempResult;
 };
 
 // element表单拼接校验规则文字
-export function checkRules(ruleObj, config, fielIdArr = ["fill", "select"]) {
+export function checkRules(ruleObj, config, fielIdArr = ['fill', 'select']) {
   let arr = ruleObj[config.ruleFielId];
   if (fielIdArr.indexOf(config.ruleFielId) > -1) {
-    arr = arr.map((item) => {
+    arr = arr.map(item => {
       return {
         ...item,
-        message: `${item.message || ""}${config.label || ""}`,
+        message: `${item.message || ''}${config.label || ''}`,
       };
     });
   }
@@ -124,11 +115,11 @@ export function checkRules(ruleObj, config, fielIdArr = ["fill", "select"]) {
 }
 
 // 数组转化成树形结构
-export function tranListToTreeData(arr, id, pId, sortField = "sort") {
+export function tranListToTreeData(arr, id, pId, sortField = 'sort') {
   const newArr = [];
   // 1. 构建一个字典：能够快速根据id找到对象。
   const map = {};
-  arr.forEach((item) => {
+  arr.forEach(item => {
     // 为了计算方便，统一添加children
     item.children = [];
     // 构建一个字典
@@ -137,7 +128,7 @@ export function tranListToTreeData(arr, id, pId, sortField = "sort") {
   });
 
   // 2. 对于arr中的每一项
-  arr.forEach((item) => {
+  arr.forEach(item => {
     const parent = map[item[pId]];
     if (parent) {
       //    如果它有父级，把当前对象添加父级元素的children中
@@ -170,7 +161,7 @@ export function tranListToTreeData(arr, id, pId, sortField = "sort") {
  */
 export function treeToArray(tree, property) {
   let res = [];
-  tree.forEach((el) => {
+  tree.forEach(el => {
     res.push(el);
     el[property] && res.push(...treeToArray(el[property], property));
   });
@@ -180,17 +171,13 @@ export function treeToArray(tree, property) {
 // data 是树型数组
 // key 是String 对象中的key值
 // value 是key值符合的条件
-export function getAllChidlren(data, value, key, childKey = "child") {
+export function getAllChidlren(data, value, key, childKey = 'child') {
   var result = [];
   var fn = function (data) {
     if (Array.isArray(data)) {
       // 判断是否是数组并且没有的情况下，
-      data.forEach((item) => {
-        if (
-          (Array.isArray(value) &&
-            (value || []).some((val) => item[key] == val)) ||
-          item[key] === value
-        ) {
+      data.forEach(item => {
+        if ((Array.isArray(value) && (value || []).some(val => item[key] == val)) || item[key] === value) {
           // 数据循环每个子项，并且判断子项下边是否有id值
           result.push(item); // 返回的结果等于每一项
         } else if (item[childKey]) {
@@ -205,22 +192,22 @@ export function getAllChidlren(data, value, key, childKey = "child") {
 
 // 获取应用门户对应的code
 export function getApplyPrefixCode(targetUrl) {
-  const winTopUrl = targetUrl || window.top.location.pathname || "";
+  const winTopUrl = targetUrl || window.top.location.pathname || '';
   const mkey = getPageKey(winTopUrl);
   const moduleKeyMap = {
-    erpPortal: "ERP",
-    crmPortal: "CRM",
-    leaderShow: "LEADER",
+    erpPortal: 'ERP',
+    crmPortal: 'CRM',
+    leaderShow: 'LEADER',
   };
-  return moduleKeyMap[mkey] || "";
+  return moduleKeyMap[mkey] || '';
 }
 
 // 获取文件夹名称
 export function getPageKey(targetUrl) {
-  const isDevelopment = process.env.NODE_ENV === "development";
-  const isDebug = process.env.VUE_APP_MODE === "debug";
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isDebug = process.env.VUE_APP_MODE === 'debug';
   const path = targetUrl || location.pathname;
-  const names = path.split("/");
+  const names = path.split('/');
   const applyName = isDevelopment ? names[1] : isDebug ? names[1] : names[1];
   return applyName;
 }
@@ -256,10 +243,10 @@ export function getPageKey(targetUrl) {
  * 千位分割数字
  */
 export function toDecimalMark(num) {
-  if (typeof parseFloat(num) != "number") {
-    return "--";
+  if (typeof parseFloat(num) != 'number') {
+    return '--';
   }
-  return num.toLocaleString("en-US");
+  return num.toLocaleString('en-US');
 }
 
 /**
@@ -268,47 +255,29 @@ export function toDecimalMark(num) {
  * @returns
  */
 export function changeNumToHan(num) {
-  var arr1 = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
-  var arr2 = [
-    "",
-    "十",
-    "百",
-    "千",
-    "万",
-    "十",
-    "百",
-    "千",
-    "亿",
-    "十",
-    "百",
-    "千",
-    "万",
-    "十",
-    "百",
-    "千",
-    "亿",
-  ];
-  if (!num || isNaN(num)) return "零";
-  var english = num.toString().split("");
-  var result = "";
+  var arr1 = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+  var arr2 = ['', '十', '百', '千', '万', '十', '百', '千', '亿', '十', '百', '千', '万', '十', '百', '千', '亿'];
+  if (!num || isNaN(num)) return '零';
+  var english = num.toString().split('');
+  var result = '';
   for (var i = 0; i < english.length; i++) {
     var des_i = english.length - 1 - i; // 倒序排列设值
     result = arr2[i] + result;
     var arr1_index = english[des_i];
     result = arr1[arr1_index] + result;
   }
-  result = result.replace(/零(千|百|十)/g, "零").replace(/十零/g, "十"); // 将【零千、零百】换成【零】 【十零】换成【十】
-  result = result.replace(/零+/g, "零"); // 合并中间多个零为一个零
-  result = result.replace(/零亿/g, "亿").replace(/零万/g, "万"); // 将【零亿】换成【亿】【零万】换成【万】
-  result = result.replace(/亿万/g, "亿"); // 将【亿万】换成【亿】
-  result = result.replace(/零+$/, ""); // 移除末尾的零
+  result = result.replace(/零(千|百|十)/g, '零').replace(/十零/g, '十'); // 将【零千、零百】换成【零】 【十零】换成【十】
+  result = result.replace(/零+/g, '零'); // 合并中间多个零为一个零
+  result = result.replace(/零亿/g, '亿').replace(/零万/g, '万'); // 将【零亿】换成【亿】【零万】换成【万】
+  result = result.replace(/亿万/g, '亿'); // 将【亿万】换成【亿】
+  result = result.replace(/零+$/, ''); // 移除末尾的零
   // 将【一十】换成【十】
-  result = result.replace(/^一十/g, "十");
+  result = result.replace(/^一十/g, '十');
   return result;
 }
 
 function isObject(target) {
-  if (typeof target === "object") {
+  if (typeof target === 'object') {
     return true;
   }
   return false;
@@ -336,33 +305,33 @@ export function calculateDiffTime(startTime, endTime, type) {
   var second = runTime;
   if (type === 1) {
     // 返回相差年数
-    return year + "年";
+    return year + '年';
   } else if (type === 2) {
     // 返回相差年数月数
-    return year + "年" + month + "月";
+    return year + '年' + month + '月';
   } else if (type === 3) {
     // 返回相差年数月数天数
-    return year + "年" + month + "月" + day + "日";
+    return year + '年' + month + '月' + day + '日';
   } else {
     // 返回相差年数月数天数时分秒
-    let time = "";
+    let time = '';
     if (year > 0) {
-      time = year + "年";
+      time = year + '年';
     }
     if (month > 0) {
-      time += month + "月";
+      time += month + '月';
     }
     if (day > 0) {
-      time += day + "日";
+      time += day + '日';
     }
     if (hour > 0) {
-      time += hour + "时";
+      time += hour + '时';
     }
     if (minute > 0) {
-      time += minute + "分";
+      time += minute + '分';
     }
     if (second > 0) {
-      time += second + "秒";
+      time += second + '秒';
     }
     return time;
   }
@@ -375,28 +344,17 @@ export function calculateDiffTime(startTime, endTime, type) {
  */
 export function translateMoney(money) {
   //汉字的数字
-  var cnNums = new Array(
-    "零",
-    "壹",
-    "贰",
-    "叁",
-    "肆",
-    "伍",
-    "陆",
-    "柒",
-    "捌",
-    "玖"
-  );
+  var cnNums = new Array('零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖');
   //基本单位
-  var cnIntRadice = new Array("", "拾", "佰", "仟");
+  var cnIntRadice = new Array('', '拾', '佰', '仟');
   //对应整数部分扩展单位
-  var cnIntUnits = new Array("", "万", "亿", "兆");
+  var cnIntUnits = new Array('', '万', '亿', '兆');
   //对应小数部分单位
-  var cnDecUnits = new Array("角", "分", "毫", "厘");
+  var cnDecUnits = new Array('角', '分', '毫', '厘');
   //整数金额时后面跟的字符
-  var cnInteger = "整";
+  var cnInteger = '整';
   //整型完以后的单位
-  var cnIntLast = "元";
+  var cnIntLast = '元';
   //最大处理的数字
   var maxNum = 999999999999999.9999;
   //金额整数部分
@@ -404,16 +362,16 @@ export function translateMoney(money) {
   //金额小数部分
   var decimalNum;
   //输出的中文金额字符串
-  var chineseStr = "";
+  var chineseStr = '';
   //分离金额后用的数组，预定义
   var parts;
-  if (money == "") {
-    return "";
+  if (money == '') {
+    return '';
   }
   money = parseFloat(money);
   if (money >= maxNum) {
     //超出最大处理数字
-    return "";
+    return '';
   }
   if (money == 0) {
     chineseStr = cnNums[0] + cnIntLast + cnInteger;
@@ -421,11 +379,11 @@ export function translateMoney(money) {
   }
   //转换为字符串
   money = money.toString();
-  if (money.indexOf(".") == -1) {
+  if (money.indexOf('.') == -1) {
     integerNum = money;
-    decimalNum = "";
+    decimalNum = '';
   } else {
-    parts = money.split(".");
+    parts = money.split('.');
     integerNum = parts[0];
     decimalNum = parts[1].substr(0, 4);
   }
@@ -438,7 +396,7 @@ export function translateMoney(money) {
       var p = IntLen - i - 1;
       var q = p / 4;
       var m = p % 4;
-      if (n == "0") {
+      if (n == '0') {
         zeroCount++;
       } else {
         if (zeroCount > 0) {
@@ -455,18 +413,18 @@ export function translateMoney(money) {
     chineseStr += cnIntLast;
   }
   //小数部分
-  if (decimalNum != "") {
+  if (decimalNum != '') {
     var decLen = decimalNum.length;
     for (let i = 0; i < decLen; i++) {
       let n = decimalNum.substr(i, 1);
-      if (n != "0") {
+      if (n != '0') {
         chineseStr += cnNums[Number(n)] + cnDecUnits[i];
       }
     }
   }
-  if (chineseStr == "") {
+  if (chineseStr == '') {
     chineseStr += cnNums[0] + cnIntLast + cnInteger;
-  } else if (decimalNum == "") {
+  } else if (decimalNum == '') {
     chineseStr += cnInteger;
   }
   return chineseStr;
@@ -474,7 +432,7 @@ export function translateMoney(money) {
 
 // html标签反转义
 export function HTMLDecode(text) {
-  var temp = document.createElement("div");
+  var temp = document.createElement('div');
   temp.innerHTML = text;
   var output = temp.innerText || temp.textContent;
   temp = null;
@@ -482,23 +440,21 @@ export function HTMLDecode(text) {
 }
 // html标签转义
 export function HTMLEncode(html) {
-  var temp = document.createElement("div");
-  temp.textContent != null
-    ? (temp.textContent = html)
-    : (temp.innerText = html);
+  var temp = document.createElement('div');
+  temp.textContent != null ? (temp.textContent = html) : (temp.innerText = html);
   var output = temp.innerHTML;
   temp = null;
   return output;
 }
 // 获取字典label
 export function getEnumStr(data, key) {
-  let result = this[key].filter((item) => {
+  let result = this[key].filter(item => {
     return item.value == data;
   });
   if (result.length) {
     return result[0].label;
   }
-  return "--";
+  return '--';
 }
 // 时间处理
 export function handleTime(param = {}, handleKey = []) {
@@ -506,14 +462,11 @@ export function handleTime(param = {}, handleKey = []) {
     ...param,
   };
   let keyArr = [...handleKey];
-  keyArr.forEach((item) => {
+  keyArr.forEach(item => {
     if (!result[item].length) {
       result[item] = null;
     } else {
-      result[item] = [
-        `${result[item][0]} 00:00:00`,
-        `${result[item][1]} 23:59:59`,
-      ];
+      result[item] = [`${result[item][0]} 00:00:00`, `${result[item][1]} 23:59:59`];
     }
   });
   return result;
@@ -522,15 +475,15 @@ export function handleTime(param = {}, handleKey = []) {
 //js将数值转为万，亿，万亿并保留两位小数
 export function bigNumberTransform(value) {
   if (!value) {
-    return "--";
+    return '--';
   }
   let param = {};
   let k = 10000;
-  let sizes = ["", "万", "亿", "万亿"];
+  let sizes = ['', '万', '亿', '万亿'];
   let i;
   if (value < k) {
     param.value = value;
-    param.unit = "";
+    param.unit = '';
   } else {
     i = Math.floor(Math.log(value) / Math.log(k));
     param.value = (value / Math.pow(k, i)).toFixed(2);

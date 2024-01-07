@@ -24,7 +24,25 @@
           <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
       </div>
-      <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+      <pro-table-list
+        ref="tableList"
+        :tableData="typeList"
+        :tableColumn="tableColumn"
+        :selection="true"
+        :showIndex="false"
+        :privateEnmu="[]"
+        :dictData="['sys_normal_disable']"
+        @current-change="handleCurrentChange"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column :key="Math.random()" label="操作" fixed="right" align="center" width="150" class-name="small-padding fixed-width">
+          <template #default="scope">
+            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:dict:edit']">修改</el-button>
+            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
+          </template>
+        </el-table-column>
+      </pro-table-list>
+      <!-- <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="字典编号" align="center" prop="dictId" />
         <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
@@ -52,7 +70,7 @@
             <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table> -->
     </el-main>
     <el-footer>
       <pro-pagination
@@ -63,37 +81,38 @@
         @pagination="getList"
       ></pro-pagination>
     </el-footer>
+    <!-- 添加或修改参数配置对话框 -->
+    <el-dialog :title="title" v-model="open" width="500px" append-to-body>
+      <el-form ref="dictRef" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="字典名称" prop="dictName">
+          <el-input v-model="form.dictName" placeholder="请输入字典名称" />
+        </el-form-item>
+        <el-form-item label="字典类型" prop="dictType">
+          <el-input v-model="form.dictType" placeholder="请输入字典类型" />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </el-container>
-  <!-- 添加或修改参数配置对话框 -->
-  <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-    <el-form ref="dictRef" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="字典名称" prop="dictName">
-        <el-input v-model="form.dictName" placeholder="请输入字典名称" />
-      </el-form-item>
-      <el-form-item label="字典类型" prop="dictType">
-        <el-input v-model="form.dictType" placeholder="请输入字典类型" />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-radio-group v-model="form.status">
-          <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </template>
-  </el-dialog>
 </template>
 
 <script setup name="Dict">
-import { headerColumnList } from './data';
+import { headerColumnList, tableColumnList } from './data';
 const headerColumn = computed(() => [...headerColumnList]);
+const tableColumn = computed(() => [...tableColumnList]);
 
 import useDictStore from '@/pages/firstDemo/store/dict';
 import { listType, getType, delType, addType, updateType, refreshCache } from '@/pages/firstDemo/api/system/dict/type';
@@ -189,6 +208,10 @@ function handleSelectionChange(selection) {
   ids.value = selection.map(item => item.dictId);
   single.value = selection.length != 1;
   multiple.value = !selection.length;
+}
+/** 单选 */
+function handleCurrentChange(select) {
+  console.log(select);
 }
 /** 修改按钮操作 */
 function handleUpdate(row) {

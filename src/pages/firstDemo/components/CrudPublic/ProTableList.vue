@@ -17,31 +17,29 @@
     <el-table-column type="index" width="50" v-if="showIndex" label="序号"></el-table-column>
     <template v-for="(item, k) in tableColumn || []">
       <el-table-column
-        :key="`${item.label}-${k}`"
         :align="align"
         :label="item.label"
         :prop="item.fielId"
         :min-width="(item.width || 100) + 'px'"
         :show-overflow-tooltip="!excludeTipList.includes(item.fielId)"
       >
-        <template slot-scope="{ row }">
+        <template #default="scope">
           <div class="conter-wrap">
             <div class="conter one-omit" v-if="item.type == 'areaId'">
-              {{ `${row.province || ''}${row.city || ''}${row.district || ''}${row.street || ''}` || '--' }}
+              {{ `${scope.row.province || ''}${scope.row.city || ''}${scope.row.district || ''}${scope.row.street || ''}` || '--' }}
             </div>
             <div class="conter one-omit" v-else-if="item.type == 'select'">
-              {{ getLabels(row, item) | codeToName(thisObj[item.optionsFielId] || [], item.valueKey, item.labelFile) }}
+              {{ $gtools.codeToName(getLabels(scope.row, item), thisObj[item.optionsFielId] || [], item.valueKey, item.labelFile) }}
             </div>
             <div class="conter one-omit" v-else-if="item.type == 'datetime'">
-              {{ getLabels(row, item) | dateformat() }}
+              {{ $gtools.dateformat(getLabels(scope.row, item)) }}
             </div>
-            <div class="conter one-omit" v-else-if="item.type == 'businessDataFormList'" @click="clickCopy($event, row, item)">
-              {{ getFormValue(row, item) }}
-              <!-- {{ getLabels(row, item) | codeToName(getMap(item.optionsFielId), item.valueKey, item.labelFile) }} -->
-            </div>
+            <!-- <div class="conter one-omit" v-else-if="item.type == 'businessDataFormList'" @click="clickCopy($event, scope.row, item)">
+              {{ getFormValue(scope.row, item) }}
+            </div> -->
             <div v-else>
-              <div class="conter one-omit" :class="{ islink: item.events }" @click="clickItem(row, item.events)">
-                <span>{{ getLabels(row, item) || '--' }}</span>
+              <div class="conter one-omit" :class="{ islink: item.events }" @click="clickItem(scope.row, item.events)">
+                <span>{{ getLabels(scope.row, item) || '--' }}</span>
                 <span v-if="item.unit">&nbsp;{{ item.unit }}</span>
               </div>
             </div>
@@ -54,11 +52,12 @@
 </template>
 
 <script>
-import headerFromTableMixin from '@/pages/tablePass/mixin/headerFromTableMixin.js';
+import headerFromTableMixin from '@/pages/firstDemo/mixin/headerFromTableMixin.js';
 export default {
   data() {
     return {
       multipleSelection: [],
+      gDictMap: {},
     };
   },
   mixins: [headerFromTableMixin],
@@ -125,19 +124,15 @@ export default {
       return [...this.tableData];
     },
     thisObj() {
-      return { ...this, ...this.otherObj };
+      return this;
     },
   },
   created() {
-    if (this.determineCache()) {
-      return;
-    }
+    console.log(this.tableData, 112233);
+
     this.initLoad();
   },
   activated() {
-    if (!this.determineCache()) {
-      return;
-    }
     this.initLoad();
   },
   methods: {
@@ -166,15 +161,6 @@ export default {
         }
         this.$message.success({ showClose: true, message: '复制成功', duration: 1500 });
       }
-    },
-
-    // 判断是否是菜单页面，菜单页面会被缓存
-    determineCache() {
-      const { path, meta = {} } = this.$route;
-      if (path == meta.key) {
-        return true;
-      }
-      return false;
     },
 
     // 初始化加载
@@ -227,10 +213,14 @@ export default {
       }
       this.$emit('current-change', val);
     },
-    async initDict() {
-      // 获取用到的字典数据
-      this.useDictList(this.dictData);
-    },
+    async initDict() {},
+  },
+  setup(props, ctx) {
+    // 获取用到的字典数据
+    const { proxy } = getCurrentInstance();
+    // main.js 全局绑定 useDict
+    const gDictMap = props.dictData.length ? proxy.useDict([...props.dictData]) : {};
+    return { ...gDictMap };
   },
 };
 </script>
@@ -243,11 +233,6 @@ export default {
 .table-list-cpn {
   :deep(.el-table__cell) {
     padding: 13px 0 !important;
-  }
-
-  :deep(.el-table__header-wrapper th.el-table__cell) {
-    // background-color: $aside-bg-active;
-    // color: #fff;
   }
 }
 </style>

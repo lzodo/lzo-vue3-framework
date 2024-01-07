@@ -1,19 +1,16 @@
-import auth from "@/plugins/auth";
-import router, { constantRoutes, dynamicRoutes } from "@/router";
-import { getRouters } from "@/pages/firstDemo/api/menu";
-import Layout from "@/layout/index";
-import ParentView from "@/components/ParentView";
-import InnerLink from "@/layout/components/InnerLink";
+import auth from '@/plugins/auth';
+import router, { constantRoutes, dynamicRoutes } from '@/router';
+import { getRouters } from '@/pages/firstDemo/api/menu';
+import Layout from '@/layout/index';
+import ParentView from '@/components/ParentView';
+import InnerLink from '@/layout/components/InnerLink';
 
 // 匹配views里面，所有层级下，所有的.vue文件
-const modules = import.meta.glob("./../../pages/**/views/**/*.vue");
+const modules = import.meta.glob('./../../pages/**/views/**/*.vue');
 
-console.log(
-  import.meta.env.VITE_PAGES_PROJECT,
-  "获取自定义参数：import.meta.env.VITE_PAGES_PROJECT"
-);
+console.log(import.meta.env.VITE_PAGES_PROJECT, '获取自定义参数：import.meta.env.VITE_PAGES_PROJECT');
 
-const usePermissionStore = defineStore("permission", {
+const usePermissionStore = defineStore('permission', {
   state: () => ({
     routes: [],
     addRoutes: [],
@@ -36,23 +33,23 @@ const usePermissionStore = defineStore("permission", {
       this.sidebarRouters = routes;
     },
     generateRoutes(roles) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         // 向后端请求路由数据
         // getRouters().then(res => {
         let res = {
-          msg: "操作成功",
+          msg: '操作成功',
           code: 200,
           data: [
             {
-              name: "System",
-              path: "/system",
+              name: 'System',
+              path: '/system',
               hidden: false,
-              redirect: "noRedirect",
-              component: "Layout",
+              redirect: 'noRedirect',
+              component: 'Layout',
               alwaysShow: true,
               meta: {
-                title: "系统管理",
-                icon: "system",
+                title: '系统管理',
+                icon: 'system',
                 noCache: false,
                 link: null,
               },
@@ -106,25 +103,25 @@ const usePermissionStore = defineStore("permission", {
                 //   },
                 // },
                 {
-                  name: "Post",
-                  path: "post",
+                  name: 'Post',
+                  path: 'post',
                   hidden: false,
-                  component: "system/post/index",
+                  component: 'system/post/index',
                   meta: {
-                    title: "岗位管理",
-                    icon: "post",
+                    title: '岗位管理',
+                    icon: 'post',
                     noCache: false,
                     link: null,
                   },
                 },
                 {
-                  name: "Dict",
-                  path: "dict",
+                  name: 'Dict',
+                  path: 'dict',
                   hidden: false,
-                  component: "system/dict/index",
+                  component: 'system/dict/index',
                   meta: {
-                    title: "字典管理",
-                    icon: "dict",
+                    title: '字典管理',
+                    icon: 'dict',
                     noCache: false,
                     link: null,
                   },
@@ -134,8 +131,6 @@ const usePermissionStore = defineStore("permission", {
           ],
         };
 
-        console.log(router, constantRoutes, dynamicRoutes, 555);
-
         const sdata = JSON.parse(JSON.stringify(res.data));
         const rdata = JSON.parse(JSON.stringify(res.data));
         const defaultData = JSON.parse(JSON.stringify(res.data));
@@ -143,7 +138,7 @@ const usePermissionStore = defineStore("permission", {
         const rewriteRoutes = filterAsyncRouter(rdata, false, true);
         const defaultRoutes = filterAsyncRouter(defaultData);
         const asyncRoutes = filterDynamicRoutes(dynamicRoutes);
-        asyncRoutes.forEach((route) => {
+        asyncRoutes.forEach(route => {
           router.addRoute(route);
         });
         this.setRoutes(rewriteRoutes);
@@ -159,17 +154,17 @@ const usePermissionStore = defineStore("permission", {
 
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
-  return asyncRouterMap.filter((route) => {
+  return asyncRouterMap.filter(route => {
     if (type && route.children) {
       route.children = filterChildren(route.children);
     }
     if (route.component) {
       // Layout ParentView 组件特殊处理
-      if (route.component === "Layout") {
+      if (route.component === 'Layout') {
         route.component = Layout;
-      } else if (route.component === "ParentView") {
+      } else if (route.component === 'ParentView') {
         route.component = ParentView;
-      } else if (route.component === "InnerLink") {
+      } else if (route.component === 'InnerLink') {
         route.component = InnerLink;
       } else {
         route.component = loadView(route.component);
@@ -178,8 +173,8 @@ function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
     if (route.children != null && route.children && route.children.length) {
       route.children = filterAsyncRouter(route.children, route, type);
     } else {
-      delete route["children"];
-      delete route["redirect"];
+      delete route['children'];
+      delete route['redirect'];
     }
     return true;
   });
@@ -189,9 +184,9 @@ function filterChildren(childrenMap, lastRouter = false) {
   var children = [];
   childrenMap.forEach((el, index) => {
     if (el.children && el.children.length) {
-      if (el.component === "ParentView" && !lastRouter) {
-        el.children.forEach((c) => {
-          c.path = el.path + "/" + c.path;
+      if (el.component === 'ParentView' && !lastRouter) {
+        el.children.forEach(c => {
+          c.path = el.path + '/' + c.path;
           if (c.children && c.children.length) {
             children = children.concat(filterChildren(c.children, c));
             return;
@@ -202,7 +197,7 @@ function filterChildren(childrenMap, lastRouter = false) {
       }
     }
     if (lastRouter) {
-      el.path = lastRouter.path + "/" + el.path;
+      el.path = lastRouter.path + '/' + el.path;
       if (el.children && el.children.length) {
         children = children.concat(filterChildren(el.children, el));
         return;
@@ -216,7 +211,7 @@ function filterChildren(childrenMap, lastRouter = false) {
 // 动态路由遍历，验证是否具备权限
 export function filterDynamicRoutes(routes) {
   const res = [];
-  routes.forEach((route) => {
+  routes.forEach(route => {
     if (route.permissions) {
       if (auth.hasPermiOr(route.permissions)) {
         res.push(route);
@@ -230,15 +225,11 @@ export function filterDynamicRoutes(routes) {
   return res;
 }
 
-export const loadView = (view) => {
+export const loadView = view => {
   let res;
   // 将菜单的组件路径，转为页面的组件进行注册
-  console.log(modules);
-
   for (const path in modules) {
-    console.log(path, 5555);
-
-    const dir = path.split("pages/firstDemo/views/")[1].split(".vue")[0];
+    const dir = path.split('pages/firstDemo/views/')[1].split('.vue')[0];
     if (dir === view) {
       // import.meta.glob 引入的文件，把路径当做方法名进行执行，就会导入对应的文件
       res = () => modules[path]();
