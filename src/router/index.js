@@ -1,34 +1,38 @@
-import { createWebHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter } from 'vue-router';
+import { constantRoutes as constant, dynamicRoutes as dynamic } from '@/pages/firstDemo/router/index';
 
-import {
-  constantRoutes as constant,
-  dynamicRoutes as dynamic,
-} from "@/pages/firstDemo/router/index";
+// const data = await new Promise((resolve, reject) => {
+//   import('@/pages/firstDemo/router/index').then(res => {
+//     resolve(res);
+//   });
+// });
+
+// console.log(data, 33);
 
 /* Layout */
-import Layout from "@/layout";
+import Layout from '@/layout';
 
 // 所有项目共用
 let allPublic = [
   {
-    path: "/redirect",
+    path: '/redirect',
     component: Layout,
     hidden: true,
     children: [
       {
-        path: "/redirect/:path(.*)",
-        component: () => import("@/views/redirect/index.vue"),
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/redirect/index.vue'),
       },
     ],
   },
   {
-    path: "/:pathMatch(.*)*",
-    component: () => import("@/views/error/404"),
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/views/error/404'),
     hidden: true,
   },
   {
-    path: "/401",
-    component: () => import("@/views/error/401"),
+    path: '/401',
+    component: () => import('@/views/error/401'),
     hidden: true,
   },
 ];

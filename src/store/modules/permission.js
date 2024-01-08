@@ -1,6 +1,8 @@
 import auth from '@/plugins/auth';
 import router, { constantRoutes, dynamicRoutes } from '@/router';
-import { getRouters } from '@/pages/firstDemo/api/menu';
+
+// firstDemo
+// import { getRouters } from '@/pages/firstDemo/api/menu';
 import Layout from '@/layout/index';
 import ParentView from '@/components/ParentView';
 import InnerLink from '@/layout/components/InnerLink';
@@ -229,7 +231,8 @@ export const loadView = view => {
   let res;
   // 将菜单的组件路径，转为页面的组件进行注册
   for (const path in modules) {
-    const dir = path.split('pages/firstDemo/views/')[1].split('.vue')[0];
+    // firstDemo
+    const dir = path.split(`pages/${import.meta.env.VITE_PAGES_PROJECT}/views/`)[1].split('.vue')[0];
     if (dir === view) {
       // import.meta.glob 引入的文件，把路径当做方法名进行执行，就会导入对应的文件
       res = () => modules[path]();
