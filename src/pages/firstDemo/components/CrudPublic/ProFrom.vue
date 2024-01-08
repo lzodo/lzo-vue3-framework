@@ -76,7 +76,7 @@ export default {
     },
     labelWidth: {
       type: Number,
-      default: 120,
+      default: 60,
     },
     // 是否一列一整行
     blockLine: {

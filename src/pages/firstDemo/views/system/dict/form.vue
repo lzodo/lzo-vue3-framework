@@ -7,7 +7,7 @@
       :data="formColumn"
       :dataId="dataId"
       :dictData="['sys_normal_disable']"
-      :labelWidth="140"
+      :labelWidth="100"
       :blockList="[]"
       :privateEnmu="[]"
     >

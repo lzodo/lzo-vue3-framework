@@ -7,6 +7,7 @@ import 'element-plus/dist/index.css';
 import locale from 'element-plus/es/locale/lang/zh-cn';
 
 import '@/assets/styles/index.scss'; // global css
+import '@/pages/firstDemo/assets/style/common.scss';
 
 import App from './App';
 import store from './store';
