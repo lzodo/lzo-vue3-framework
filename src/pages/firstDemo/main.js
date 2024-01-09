@@ -29,7 +29,7 @@ import 'virtual:svg-icons-register';
 import SvgIcon from '@/components/SvgIcon';
 import elementIcons from '@/components/SvgIcon/svgicon';
 
-import '../../permission'; // permission control
+import './permission'; // permission control
 
 import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils/ruoyi';
 
