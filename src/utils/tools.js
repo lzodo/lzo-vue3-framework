@@ -28,11 +28,211 @@ export const showEnmuName = (arr = [], value, valId = 'value', nameId = 'label')
   return (obj || {})[nameId] || '--';
 };
 
-// ================================== 新 =====================================
+/**
+ * 构造树型结构数据
+ * @param {*} data 数据源
+ * @param {*} id id字段 默认 'id'
+ * @param {*} parentId 父节点字段 默认 'parentId'
+ * @param {*} children 孩子节点字段 默认 'children'
+ */
+export function handleTree(data, id, parentId, children) {
+  let config = {
+    id: id || 'id',
+    parentId: parentId || 'parentId',
+    childrenList: children || 'children',
+  };
+
+  var childrenListMap = {};
+  var nodeIds = {};
+  var tree = [];
+
+  for (let d of data) {
+    let parentId = d[config.parentId];
+    if (childrenListMap[parentId] == null) {
+      childrenListMap[parentId] = [];
+    }
+    nodeIds[d[config.id]] = d;
+    childrenListMap[parentId].push(d);
+  }
+
+  for (let d of data) {
+    let parentId = d[config.parentId];
+    if (nodeIds[parentId] == null) {
+      tree.push(d);
+    }
+  }
+
+  for (let t of tree) {
+    adaptToChildrenList(t);
+  }
+
+  function adaptToChildrenList(o) {
+    if (childrenListMap[o[config.id]] !== null) {
+      o[config.childrenList] = childrenListMap[o[config.id]];
+    }
+    if (o[config.childrenList]) {
+      for (let c of o[config.childrenList]) {
+        adaptToChildrenList(c);
+      }
+    }
+  }
+  return tree;
+}
+
+/**
+ * 实现canvas图片直接上传功能
+ * base64 转 file
+ */
+export function dataURLtoBlob(base64, fileName) {
+  // 将base64按照 , 进行分割 将前缀  与后续内容分隔开
+  let data = base64.split(',');
+  // 利用正则表达式 从前缀中获取图片的类型信息（image/png、image/jpeg、image/webp等）
+  let type = data[0].match(/:(.*?);/)[1];
+  // 从图片的类型信息中 获取具体的文件格式后缀（png、jpeg、webp）
+  let suffix = type.split('/')[1];
+  // 使用atob()对base64数据进行解码  结果是一个文件数据流 以字符串的格式输出
+  const bstr = window.atob(data[1]);
+  // 获取解码结果字符串的长度
+  let n = bstr.length;
+  // 根据解码结果字符串的长度创建一个等长的整形数字数组
+  // 但在创建时 所有元素初始值都为 0
+  const u8arr = new Uint8Array(n);
+  // 将整形数组的每个元素填充为解码结果字符串对应位置字符的UTF-16 编码单元
+  while (n--) {
+    // charCodeAt()：获取给定索引处字符对应的 UTF-16 代码单元
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  // 利用构造函数创建File文件对象
+  // new File(bits, name, options)
+  const file = new File([u8arr], `${fileName}.${suffix}`, {
+    type: type,
+  });
+  // 将File文件对象返回给方法的调用者
+  return file;
+}
+
+/**
+ * 获取到的二进制文件 转 base64文件
+ * @param file
+ * @param scale ----压缩比例
+ * @param callback ---回调函数
+ */
+export function fileToCompressBase64AndBlob(file, scale, callback) {
+  const reader = new FileReader();
+  reader.readAsDataURL(file); // 添加二进制文件
+  reader.onload = function (event) {
+    console.log('转换成功');
+    const base64 = event.target.result;
+    compressImg(base64, scale, callback);
+  };
+  //转 失败
+  reader.onerror = function (error) {
+    console.log('转换失败');
+    callback(false);
+  };
+}
+
+/**
+ * 压缩图片方法
+ * @param base64  ----baser64文件
+ * @param scale ----压缩比例 画面质量0-9，数字越小文件越小画质越差
+ * @param callback ---回调函数
+ */
+function compressImg(base64, scale, callback) {
+  console.log(`缩放比例 ${scale}`);
+
+  // 处理缩放，转换格式
+  const img = new Image();
+  img.src = base64;
+  img.onload = function () {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.setAttribute('width', img.width);
+    canvas.setAttribute('height', img.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // 绘制白底（png图片默认黑底）
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // 绘制图片
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    // 转成base64 文件, png 图片无效（可以用 canvas-png-compression）
+    // let base64 = canvas.toDataURL('image/jpeg');
+    let base64 = canvas.toDataURL('image/jpeg');
+    // 方案1、直接用传入的压缩比例
+    base64 = canvas.toDataURL('image/jpeg', scale);
+    // 方案2、限制图片最大为3M
+    // while (base64.length > 1024 * 1024 * 3) {
+    //   scale -= 0.01;
+    //   base64 = canvas.toDataURL('image/jpeg', scale);
+    // }
+    // baser64 TO blob
+    const arr = base64.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bytes = atob(arr[1]);
+    const bytesLength = bytes.length;
+    const u8arr = new Uint8Array(bytesLength);
+    for (let i = 0; i < bytes.length; i++) {
+      u8arr[i] = bytes.charCodeAt(i);
+    }
+    const blob = new Blob([u8arr], { type: mime });
+    // 回调函数
+    callback(true, blob, base64);
+  };
+}
+
+// ================================== 新 ====================================
 // ================================== = =====================================
 // ================================== = =====================================
 // ================================== = =====================================
-// ================================== 老 =====================================
+// ================================== 老 ====================================
+// -------------------------------------------------------------------------
+// ------------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// ----------------------------------------------------------------------
+// ---------------------------------------------------------------------
+// --------------------------------------------------------------------
+// -------------------------------------------------------------------
+// ------------------------------------------------------------------
+// -----------------------------------------------------------------
+// ----------------------------------------------------------------
+// ---------------------------------------------------------------
+// --------------------------------------------------------------
+// -------------------------------------------------------------
+// ------------------------------------------------------------
+// -----------------------------------------------------------
+// ----------------------------------------------------------
+// ---------------------------------------------------------
+// --------------------------------------------------------
+// -------------------------------------------------------
+// ------------------------------------------------------
+// -----------------------------------------------------
+// ----------------------------------------------------
+// ---------------------------------------------------
+// -------------------------------------------------
+// -----------------------------------------------
+// ---------------------------------------------
+// -------------------------------------------
+// -----------------------------------------
+// ---------------------------------------
+// -------------------------------------
+// -----------------------------------
+// ---------------------------------
+// -------------------------------
+// -----------------------------
+// ---------------------------
+// -------------------------
+// -----------------------
+// ---------------------
+// -------------------
+// -----------------
+// ---------------
+// -------------
+// -----------
+// ---------
+// -------
+// -----
+// ---
+// -
 
 /**
  * 判断是否是IE
@@ -57,15 +257,15 @@ export function isIE11() {
   }
 }
 // 中文转拼音isLowerCase:1-字符串全部转小写
-export const chineseToEn = (cnStr, isLowerCase = 1) => {
-  let pinyin = require('js-pinyin');
-  pinyin.setOptions({ checkPolyphone: false, charCase: 0 });
-  let transferStr = pinyin.getFullChars(cnStr);
-  if (isLowerCase) {
-    transferStr = transferStr.toLowerCase();
-  }
-  return transferStr;
-};
+// export const chineseToEn = (cnStr, isLowerCase = 1) => {
+//   let pinyin = require('js-pinyin');
+//   pinyin.setOptions({ checkPolyphone: false, charCase: 0 });
+//   let transferStr = pinyin.getFullChars(cnStr);
+//   if (isLowerCase) {
+//     transferStr = transferStr.toLowerCase();
+//   }
+//   return transferStr;
+// };
 
 /**
  * 获取href参数
