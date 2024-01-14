@@ -52,6 +52,7 @@ import DictTag from '@/components/DictTag';
 
 const app = createApp(App);
 
+// ===============================
 // 字典
 import { useDict } from '@/pages/firstDemo/utils/dict';
 // 引入CrudPublic下公共组件
@@ -61,6 +62,8 @@ import CostomGlobal from '@/components/CostomGlobal/index.js';
 
 app.use(CrudPublic);
 app.use(CostomGlobal);
+
+// ================================
 
 // 全局方法挂载
 app.config.globalProperties.useDict = useDict;
