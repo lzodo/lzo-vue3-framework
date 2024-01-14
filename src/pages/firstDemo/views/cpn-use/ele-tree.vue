@@ -95,6 +95,16 @@ setTimeout(() => {
     },
   ];
 }, 1000);
+
+setTimeout(() => {
+  checkData.value = [
+    {
+      name: '菜单管理',
+      id: 11,
+      pid: 1,
+    },
+  ];
+}, 5000);
 </script>
 
 <style lang="scss" scoped>

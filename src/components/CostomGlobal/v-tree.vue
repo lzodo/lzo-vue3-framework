@@ -1,5 +1,5 @@
 <template>
-  <!-- 树组件 -->
+  <!-- elementUI 树组件 -->
   <div class="tree-box">
     <el-input v-model.trim="filterText" class="filter-box" placeholder="输入关键字" clearable />
     <div class="flex-1">

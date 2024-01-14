@@ -60,6 +60,11 @@ import CrudPublic from '@/pages/firstDemo/components/CrudPublic/index.js';
 // 自己积累的全局组件
 import CostomGlobal from '@/components/CostomGlobal/index.js';
 
+// 将package.json中 "module": "./dist/index.es.js"改为"module": "./dist/index.mjs"
+// import vue3videoPlay from 'vue3-video-play'; // 引入组件
+// import 'vue3-video-play/dist/style.css'; // 引入css
+// app.use(vue3videoPlay);
+
 app.use(CrudPublic);
 app.use(CostomGlobal);
 
